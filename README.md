@@ -41,7 +41,7 @@ Material-Agent-Ecosystem/
 │   ├── data-model.md               # 数据模型
 │   ├── business-architecture.md    # 业务架构
 │   ├── Agent竞马结果上链.md         # 链上化方案设计（本文档的实现依据）
-│   └── review-requirements.md      # 复核老师的 4 项验收标准（原文）
+│   
 └── README.md
 ```
 
