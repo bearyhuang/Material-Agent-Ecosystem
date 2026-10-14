@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7">
+<title>FormulaAgents · 配方研发智能体</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%E2%9A%97%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="logo">⚗︎</div>
+    <div>
+      <h1>FormulaAgents</h1>
+      <p class="sub">自进化配方算法蜂群 · 一位配方工程师的研发旅程</p>
+    </div>
+  </div>
+  <div class="ctrl">
+    <div class="seg">
+      <button data-sys="epoxy" class="on">环氧</button>
+      <button data-sys="pu">聚氨酯</button>
+      <button data-sys="acrylic">丙烯酸</button>
+      <button data-sys="photoresist">光刻胶</button>
+    </div>
+    <button id="btn-tour" class="primary" type="button" aria-label="开始或停止旅程导览">▶ 导览</button>
+    <button id="btn-chain" class="primary" type="button" aria-label="查看上链锚定信息">⛓ 链上</button>
+  </div>
+</header>
+
+<nav class="journey" id="journey"></nav>
+
+<main>
+  <!-- S1 接任务 -->
+  <section id="s1" class="stage">
+    <div class="hero">
+      <h2>今天要交付什么</h2>
+      <p class="lead">先定体系与目标，后面每一步都只围绕它展开 —— <b>先定目标，再谈算法</b>。</p>
+      <div class="pickrow"><span class="picklabel">目标性能</span><div class="seg" id="seg-target"></div></div>
+    </div>
+    <div class="cards" id="s1-cards"></div>
+    <div class="panel">
+      <h3>这一阶段系统在做什么</h3>
+      <p>把"客户要什么"翻译成可计算的研发目标：体系、目标性能、约束（成本 / VOC / 工艺窗口）。
+         它是一个<b>意图澄清</b>节点，不产生任何数值。</p>
+    </div>
+  </section>
+
+  <!-- S2 找经验 -->
+  <section id="s2" class="stage hidden">
+    <div class="hero">
+      <h2>找经验 · 世界模型</h2>
+      <p class="lead">Agent 的 Scientific World Model：原料 → 中间体 → 配方 → 实验 → 性能，挂上供应商与客户应用。</p>
+    </div>
+    <div class="panel">
+      <div class="row2">
+        <div>
+          <h3>知识图谱（可拖拽旋转）</h3>
+          <div id="wm-graph" class="graph3d"></div>
+          <div class="legend" id="wm-legend"></div>
+        </div>
+        <div>
+          <h3>跨项目发现问答</h3>
+          <p class="hint">答案必须带引用溯源 —— 没有证据就说"没命中"。</p>
+          <div class="askrow">
+            <input id="ask-input" placeholder="例：E51 被哪些项目用了？">
+            <button id="ask-btn">提问</button>
+          </div>
+          <div class="askrow">
+            <button class="chip" data-q="环氧树脂 E51 被哪些项目用了？">E51 用在哪</button>
+            <button class="chip" data-q="有没有其他项目用过类似的体系？">相似配方</button>
+            <button class="chip" data-q="FS-EP-0001 的剪切强度为什么下降？">归因分析</button>
+          </div>
+          <div id="ask-out" class="answer" role="log" aria-live="polite" aria-label="问答结果"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3 材料计算中心 -->
+  <section id="s3" class="stage hidden">
+    <div class="hero">
+      <h2>材料计算中心 · 数字孪生</h2>
+      <p class="lead">把原料分子做成可交互的数字孪生：<b>特性 · 化学键 · 官能团 · 性能</b> 四层标注。</p>
+    </div>
+    <div class="molwrap">
+      <div class="mollist" id="mol-list"></div>
+      <div class="molview">
+        <div id="mol-3d"></div>
+        <div class="tabs" id="mol-tabs">
+          <button class="tab on" data-t="prop">特性</button>
+          <button class="tab" data-t="bond">化学键</button>
+          <button class="tab" data-t="group">官能团</button>
+          <button class="tab" data-t="perf">性能</button>
+        </div>
+        <div id="mol-info" class="molinfo"></div>
+      </div>
+    </div>
+    <p class="hint">⚠️ 展示的是<b>代表性结构单元</b>（工业牌号多为聚合/混合物），用于教学与可视化，不等于精确结构。</p>
+  </section>
+
+  <!-- S4 选算法 -->
+  <section id="s4" class="stage hidden">
+    <div class="hero">
+      <h2>选算法 · 蜂群竞技场</h2>
+      <p class="lead">多个算法族同场对抗，Agent 逐条提案，可信冠军由闸门择优 —— <b>不是 R² 最高即冠军</b>。</p>
+    </div>
+    <div class="arena">
+      <div class="agents" id="arena-agents"></div>
+      <div class="boardwrap">
+        <table id="arena-board"><thead><tr>
+          <th>算法族</th><th>dev MAE</th><th>golden MAE</th><th>轮次 · 切分</th>
+          <th>覆盖率</th><th>试验数</th><th>状态</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>为什么是它赢</h3>
+      <div id="arena-why" class="kv"></div>
+    </div>
+  </section>
+
+  <!-- S5 做设计 -->
+  <section id="s5" class="stage hidden">
+    <div class="hero">
+      <h2>做设计 · 3D 设计空间</h2>
+      <p class="lead">同一批候选在多个算法族下被排成不同样子 —— 直观看到<b>算法对配方设计的影响</b>。</p>
+    </div>
+    <div class="panel">
+      <div class="rowflex">
+        <span>按算法族着色：</span>
+        <span id="design-family-chips"></span>
+        <label class="chk"><input type="checkbox" id="design-spread" checked> 按<b>算法分歧</b>着色</label>
+      </div>
+      <div id="design-3d" class="graph3d"></div>
+      <p class="hint" id="design-note"></p>
+    </div>
+  </section>
+
+  <!-- S6 定实验 -->
+  <section id="s6" class="stage hidden">
+    <div class="hero">
+      <h2>定实验 · 人批准</h2>
+      <p class="lead">系统给出建议清单与区间，<b>人</b>批准后才投放 —— Agent 绝不自动执行。</p>
+    </div>
+    <div class="boardwrap">
+      <table id="plan-table"><thead><tr>
+        <th>计划</th><th>候选</th><th>预测</th><th>区间</th><th>状态</th><th>批准人</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <!-- S7 出数据卡 -->
+  <section id="s7" class="stage hidden">
+    <div class="hero">
+      <h2>出数据卡 · 卡片交付</h2>
+      <p class="lead">每张卡可导出 PLM / CAE，标注适用域与区间方法 —— <b>可审计，不黑箱</b>。</p>
+    </div>
+    <div class="cards" id="dc-grid"></div>
+  </section>
+
+  <!-- S8 极限制造 -->
+  <section id="s8" class="stage hidden">
+    <div class="hero">
+      <h2>极限制造 · 工艺窗口</h2>
+      <p class="lead">把可信冠军做成数字孪生：扫描 PEB 温度 × PAG 负载，看<b>工艺窗口有多窄</b>。</p>
+    </div>
+    <div class="panel">
+      <div class="rowflex">
+        <button id="pw-btn" class="primary">▶ 生成工艺窗口</button>
+        <span class="hint" id="pw-note">仅光刻胶体系支持；需先用铸造厂跑出冠军</span>
+      </div>
+      <div id="pw-heat" class="heatmap"></div>
+      <p class="hint" id="pw-desc"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-head"><b>FormulaAgents</b> · 诚实口径</div>
+  <div class="caliber">
+    <span class="cb">🧪 数据为合成/脱敏，仅展示流程与决策质量，<b>不声称真实精度</b></span>
+    <span class="cb">⚠️ 标注「模拟」的结果非实测，可追溯每个来源</span>
+    <span class="cb">🗃️ 失败样本是一等公民，已入负例库</span>
+    <span class="cb">🚫 单 Agent 盲选会被可信闸门否决，不盲信单点</span>
+  </div>
+  <div class="foot-sub">数值唯一来源为确定性评测内核；LLM 不产出任何指标。</div>
+</footer>
+
+<div id="chain-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="上链锚定信息">
+  <div class="modal-mask" data-close></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>⛓ Material Agent Explorer · BOT Chain 主网</h2>
+      <button class="modal-x" data-close type="button" aria-label="关闭">✕</button>
+    </div>
+    <div class="modal-body" id="chain-body"></div>
+  </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/3Dmol-min.js"></script>
+<script src="vendor/3d-force-graph.min.js"></script>
+<script src="vendor/ethers.umd.min.js"></script>
+<script src="js/wallet.js"></script>
+<script src="js/app.js"></script>
+<script src="js/race-ui.js"></script>
+</body>
+</html>

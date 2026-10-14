@@ -1,0 +1,32 @@
+# 工具层（Python 确定性计算）+ 编排层（LangGraph）
+# INSTALL_BO=1 时额外装 torch(CPU)/gpytorch/botorch（贝叶斯优化钩子）
+FROM python:3.12-slim
+
+ARG INSTALL_BO=0
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+# 系统依赖 + Node 22（Evolver 的 validation 只允许 node/npm/npx 开头的命令）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg git build-essential pkg-config libpq-dev \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+COPY infra/requirements.txt infra/requirements-bo.txt /tmp/req/
+
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r /tmp/req/requirements.txt
+
+RUN if [ "$INSTALL_BO" = "1" ]; then \
+      pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --index-url https://download.pytorch.org/whl/cpu torch \
+      && pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r /tmp/req/requirements-bo.txt ; \
+    fi
+
+# 中文渲染（演示页/进化曲线需要 CJK 字形）
+RUN apt-get update && apt-get install -y --no-install-recommends fonts-noto-cjk \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["tail", "-f", "/dev/null"]

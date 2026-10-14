@@ -1,0 +1,64 @@
+{
+  "network": "BOT Chain \u4e3b\u7f51",
+  "chain_id": 677,
+  "rpc": "https://rpc.botchain.ai",
+  "explorer": "https://scan.botchain.ai",
+  "contracts": {
+    "MaterialAgentRegistry": {
+      "address": "0x466FeBb871BD22d7A554Ce26d36B1CaE168CffD1",
+      "deploy_tx": "0x41f01843cbdc89c05ba1a6ca8cf43062c6c1ead7cd2f2c5d905ef8694996d618",
+      "block": 26592877,
+      "explorer": "https://scan.botchain.ai/address/0x466FeBb871BD22d7A554Ce26d36B1CaE168CffD1",
+      "tx_explorer": "https://scan.botchain.ai/tx/0x41f01843cbdc89c05ba1a6ca8cf43062c6c1ead7cd2f2c5d905ef8694996d618",
+      "deployed_at": "2026-10-13T22:04:41.131Z"
+    },
+    "AgentCompetition": {
+      "address": "0x587Cd28F0704b4F00B0ee0629838920261424216",
+      "deploy_tx": "0x836806cf340950f3b7ff2c26dfa210b8f6d1b09ecb2469b51f82b0cda55d170a",
+      "block": 26592885,
+      "explorer": "https://scan.botchain.ai/address/0x587Cd28F0704b4F00B0ee0629838920261424216",
+      "tx_explorer": "https://scan.botchain.ai/tx/0x836806cf340950f3b7ff2c26dfa210b8f6d1b09ecb2469b51f82b0cda55d170a",
+      "deployed_at": "2026-10-13T22:04:47.579Z"
+    },
+    "PredictionRecord": {
+      "address": "0xdD2cDe2104432F953349524De44c867164dB1A2F",
+      "deploy_tx": "0x6145252a8c3c2643a277f0a53a1ab8eaf962cbfb348b9e36b92aea5b3320af77",
+      "block": 26592894,
+      "explorer": "https://scan.botchain.ai/address/0xdD2cDe2104432F953349524De44c867164dB1A2F",
+      "tx_explorer": "https://scan.botchain.ai/tx/0x6145252a8c3c2643a277f0a53a1ab8eaf962cbfb348b9e36b92aea5b3320af77",
+      "deployed_at": "2026-10-13T22:04:54.020Z"
+    },
+    "FormulaSwarmAttestor": {
+      "address": "0x3A0d7c52D1EFa6183a8AfB5c95B9Ab737b9fac45",
+      "deploy_tx": "af80ccfe72cc498e9acf14183b2195cbcb021b55e48e11bb8bd6397b55125a6c",
+      "block": 25906737,
+      "explorer": "https://scan.botchain.ai/address/0x3A0d7c52D1EFa6183a8AfB5c95B9Ab737b9fac45",
+      "tx_explorer": "https://scan.botchain.ai/tx/af80ccfe72cc498e9acf14183b2195cbcb021b55e48e11bb8bd6397b55125a6c",
+      "deployed_at": "2026-10-07T23:07:47Z"
+    }
+  },
+  "deployer": "0x4Bd9a6ab15329F592f885f7d3891406178c4070f",
+  "attestor_anchors": [
+    {
+      "k": "\u2460 \u6279\u51c6\u7559\u75d5",
+      "obj": "plan#37 \u00b7 run=fdep-5139a2 R1",
+      "tx": "0x5ea8d59b6ee661eb40cdd6ba3ec2a3918210db156d80f40a5b7e894dbed15db9",
+      "block": 25907726,
+      "gas": 142376,
+      "extra": "planHash 0x1e4b\u20268bf0 \u00b7 approverHash \u4e0e\u94fe\u4e0b keccak256(\u6279\u51c6\u4eba) \u4e00\u81f4"
+    },
+    {
+      "k": "\u2461 \u9884\u6d4b\u767b\u8bb0\u9501",
+      "obj": "PLAN-363",
+      "tx": "0x87829d6c5dbe209bafc329455841b9433d98cfcf6476d180a86d1123a2910c22",
+      "block": 25907733,
+      "gas": 146556,
+      "extra": "redacted=True\uff0c\u94fe\u4e0a\u6570\u503c (0,0,0) \u00b7 \u771f\u5b9e\u9884\u6d4b\u503c\u672a\u4e0a\u94fe"
+    }
+  ],
+  "deployer_balance_snapshot": {
+    "bot": 0.46267886,
+    "at": "2026-10-07"
+  },
+  "note": "\u7531 blockchain/deployments.json \u751f\u6210\uff08blockchain/mae.mjs deploy \u4f1a\u81ea\u52a8\u5237\u65b0\u672c\u6587\u4ef6\uff09\u3002\u4e09\u4e2a MAE \u5408\u7ea6\u4e3a null \u8868\u793a\u5c1a\u672a\u90e8\u7f72\uff1a\u914d\u7f6e blockchain/.env \u7684 BOT_PRIVATE_KEY \u540e\u6267\u884c node mae.mjs deploy\u3002"
+}

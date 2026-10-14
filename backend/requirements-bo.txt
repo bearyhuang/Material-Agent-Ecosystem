@@ -1,0 +1,3 @@
+# 贝叶斯优化钩子（GPyTorch · BoTorch）；torch 由 Dockerfile 从 download.pytorch.org/whl/cpu 安装
+gpytorch>=1.13
+botorch>=0.12

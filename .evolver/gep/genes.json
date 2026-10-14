@@ -1,0 +1,312 @@
+{
+ "version": 1,
+ "genes": [
+  {
+   "type": "Gene",
+   "schema_version": "1.13.0",
+   "id": "gene_gbr_nonlinear",
+   "category": "optimize",
+   "signals_match": [
+    "target:lap_shear_strength",
+    "dataset:small_sample",
+    "n_ge_80",
+    "needs_uq:false"
+   ],
+   "preconditions": [
+    "数据来自 mat.v_arena_dataset，按 created_at 排序",
+    "golden 集冻结且只评估一次"
+   ],
+   "strategy": [
+    "选择算法族 gbr：梯度提升，拟合能力强，样本不足时易过拟合",
+    "从 PG 语义视图取数并构建机理特征（当量比等）",
+    "时间前向滚动评估（禁止随机切分）",
+    "golden 集只评一次，做 split-conformal 覆盖率与基线增益双闸",
+    "Capsule 写入 PG，负例同样入库"
+   ],
+   "constraints": {
+    "max_files": 0,
+    "forbidden_paths": [
+     "arena.py",
+     "src/",
+     "doc/files/schema.sql"
+    ]
+   },
+   "validation": [
+    "node run_eval.js --check"
+   ],
+   "summary": "gbr 小样本配方建模策略（梯度提升，拟合能力强，样本不足时易过拟合）",
+   "claims": [
+    {
+     "predicate": "split:time_forward and golden_evaluated_once",
+     "kind": "behavioral"
+    }
+   ],
+   "scope": {
+    "signals": [
+     "target:lap_shear_strength",
+     "dataset:small_sample",
+     "n_ge_80",
+     "needs_uq:false"
+    ],
+    "predicate": "n in [80,100000]"
+   },
+   "anti_patterns": [
+    {
+     "pattern": "random_split",
+     "reason": "破坏时间前向假设"
+    },
+    {
+     "pattern": "tune_on_golden",
+     "reason": "golden 反复试 → 假冠军"
+    }
+   ],
+   "asset_id": "sha256:b10a97cc9d48476bd88e8017c8232c073c9cfd8c2a2fc43c9f670c5ec6ab35a6"
+  },
+  {
+   "type": "Gene",
+   "schema_version": "1.13.0",
+   "id": "gene_gp_small_n_uq",
+   "category": "optimize",
+   "signals_match": [
+    "target:lap_shear_strength",
+    "dataset:small_sample",
+    "n_ge_20",
+    "n_lt_500",
+    "needs_uq:true"
+   ],
+   "preconditions": [
+    "数据来自 mat.v_arena_dataset，按 created_at 排序",
+    "golden 集冻结且只评估一次"
+   ],
+   "strategy": [
+    "选择算法族 gp：高斯过程，原生给出预测区间，小样本 + 需 UQ 首选",
+    "从 PG 语义视图取数并构建机理特征（当量比等）",
+    "时间前向滚动评估（禁止随机切分）",
+    "golden 集只评一次，做 split-conformal 覆盖率与基线增益双闸",
+    "Capsule 写入 PG，负例同样入库"
+   ],
+   "constraints": {
+    "max_files": 0,
+    "forbidden_paths": [
+     "arena.py",
+     "src/",
+     "doc/files/schema.sql"
+    ]
+   },
+   "validation": [
+    "node run_eval.js --check"
+   ],
+   "summary": "gp 小样本配方建模策略（高斯过程，原生给出预测区间，小样本 + 需 UQ 首选）",
+   "claims": [
+    {
+     "predicate": "split:time_forward and golden_evaluated_once",
+     "kind": "behavioral"
+    }
+   ],
+   "scope": {
+    "signals": [
+     "target:lap_shear_strength",
+     "dataset:small_sample",
+     "n_ge_20",
+     "n_lt_500",
+     "needs_uq:true"
+    ],
+    "predicate": "n in [20,500]"
+   },
+   "anti_patterns": [
+    {
+     "pattern": "random_split",
+     "reason": "破坏时间前向假设"
+    },
+    {
+     "pattern": "tune_on_golden",
+     "reason": "golden 反复试 → 假冠军"
+    }
+   ],
+   "asset_id": "sha256:ba95c125c60d022ef8120832442f998c447d4450a06edc72b7ef690909f99511"
+  },
+  {
+   "type": "Gene",
+   "schema_version": "1.13.0",
+   "id": "gene_pls_collinear",
+   "category": "optimize",
+   "signals_match": [
+    "target:lap_shear_strength",
+    "dataset:small_sample",
+    "n_ge_20",
+    "needs_uq:false"
+   ],
+   "preconditions": [
+    "数据来自 mat.v_arena_dataset，按 created_at 排序",
+    "golden 集冻结且只评估一次"
+   ],
+   "strategy": [
+    "选择算法族 pls：偏最小二乘，适合共线性的配比数据",
+    "从 PG 语义视图取数并构建机理特征（当量比等）",
+    "时间前向滚动评估（禁止随机切分）",
+    "golden 集只评一次，做 split-conformal 覆盖率与基线增益双闸",
+    "Capsule 写入 PG，负例同样入库"
+   ],
+   "constraints": {
+    "max_files": 0,
+    "forbidden_paths": [
+     "arena.py",
+     "src/",
+     "doc/files/schema.sql"
+    ]
+   },
+   "validation": [
+    "node run_eval.js --check"
+   ],
+   "summary": "pls 小样本配方建模策略（偏最小二乘，适合共线性的配比数据）",
+   "claims": [
+    {
+     "predicate": "split:time_forward and golden_evaluated_once",
+     "kind": "behavioral"
+    }
+   ],
+   "scope": {
+    "signals": [
+     "target:lap_shear_strength",
+     "dataset:small_sample",
+     "n_ge_20",
+     "needs_uq:false"
+    ],
+    "predicate": "n in [20,100000]"
+   },
+   "anti_patterns": [
+    {
+     "pattern": "random_split",
+     "reason": "破坏时间前向假设"
+    },
+    {
+     "pattern": "tune_on_golden",
+     "reason": "golden 反复试 → 假冠军"
+    }
+   ],
+   "asset_id": "sha256:18f4b34396dd4f23cd2fd1a41e8b1f8ad2df605041cd8b1b8b68e00ce7ee114f"
+  },
+  {
+   "type": "Gene",
+   "schema_version": "1.13.0",
+   "id": "gene_rf_robust",
+   "category": "optimize",
+   "signals_match": [
+    "target:lap_shear_strength",
+    "dataset:small_sample",
+    "n_ge_50",
+    "needs_uq:false"
+   ],
+   "preconditions": [
+    "数据来自 mat.v_arena_dataset，按 created_at 排序",
+    "golden 集冻结且只评估一次"
+   ],
+   "strategy": [
+    "选择算法族 rf：随机森林，捕获非线性交互，UQ 需外挂 conformal",
+    "从 PG 语义视图取数并构建机理特征（当量比等）",
+    "时间前向滚动评估（禁止随机切分）",
+    "golden 集只评一次，做 split-conformal 覆盖率与基线增益双闸",
+    "Capsule 写入 PG，负例同样入库"
+   ],
+   "constraints": {
+    "max_files": 0,
+    "forbidden_paths": [
+     "arena.py",
+     "src/",
+     "doc/files/schema.sql"
+    ]
+   },
+   "validation": [
+    "node run_eval.js --check"
+   ],
+   "summary": "rf 小样本配方建模策略（随机森林，捕获非线性交互，UQ 需外挂 conformal）",
+   "claims": [
+    {
+     "predicate": "split:time_forward and golden_evaluated_once",
+     "kind": "behavioral"
+    }
+   ],
+   "scope": {
+    "signals": [
+     "target:lap_shear_strength",
+     "dataset:small_sample",
+     "n_ge_50",
+     "needs_uq:false"
+    ],
+    "predicate": "n in [50,100000]"
+   },
+   "anti_patterns": [
+    {
+     "pattern": "random_split",
+     "reason": "破坏时间前向假设"
+    },
+    {
+     "pattern": "tune_on_golden",
+     "reason": "golden 反复试 → 假冠军"
+    }
+   ],
+   "asset_id": "sha256:89428152c37b2de0decc91faf922ede633eb8476dd36e8bb42b7eff4959c5698"
+  },
+  {
+   "type": "Gene",
+   "schema_version": "1.13.0",
+   "id": "gene_ridge_small_n",
+   "category": "optimize",
+   "signals_match": [
+    "target:lap_shear_strength",
+    "dataset:small_sample",
+    "n_ge_20",
+    "needs_uq:false"
+   ],
+   "preconditions": [
+    "数据来自 mat.v_arena_dataset，按 created_at 排序",
+    "golden 集冻结且只评估一次"
+   ],
+   "strategy": [
+    "选择算法族 ridge：线性先验 + L2，小样本最稳，可解释性最强",
+    "从 PG 语义视图取数并构建机理特征（当量比等）",
+    "时间前向滚动评估（禁止随机切分）",
+    "golden 集只评一次，做 split-conformal 覆盖率与基线增益双闸",
+    "Capsule 写入 PG，负例同样入库"
+   ],
+   "constraints": {
+    "max_files": 0,
+    "forbidden_paths": [
+     "arena.py",
+     "src/",
+     "doc/files/schema.sql"
+    ]
+   },
+   "validation": [
+    "node run_eval.js --check"
+   ],
+   "summary": "ridge 小样本配方建模策略（线性先验 + L2，小样本最稳，可解释性最强）",
+   "claims": [
+    {
+     "predicate": "split:time_forward and golden_evaluated_once",
+     "kind": "behavioral"
+    }
+   ],
+   "scope": {
+    "signals": [
+     "target:lap_shear_strength",
+     "dataset:small_sample",
+     "n_ge_20",
+     "needs_uq:false"
+    ],
+    "predicate": "n in [20,1000000]"
+   },
+   "anti_patterns": [
+    {
+     "pattern": "random_split",
+     "reason": "破坏时间前向假设"
+    },
+    {
+     "pattern": "tune_on_golden",
+     "reason": "golden 反复试 → 假冠军"
+    }
+   ],
+   "asset_id": "sha256:10f03b3febca370b091293e4d1614b741de2dea21f21eb474bc1da12c68425e4"
+  }
+ ]
+}

@@ -1,0 +1,35 @@
+# 工具层：数值唯一来源
+numpy>=1.26
+pandas>=2.2
+scipy>=1.13
+scikit-learn>=1.5
+xgboost>=2.1
+joblib>=1.4
+
+# 数据层：PG18 + pgvector 访问（Capsule 必须写 PG，不停在 JSONL）
+psycopg[binary]>=3.2
+pgvector>=0.3
+sqlalchemy>=2.0
+
+# 不确定性量化 / conformal
+mapie>=0.9
+
+# 编排层：LangGraph（Supervisor → Champion×N → Arbiter → Red-team → Integrator → Scribe）
+langgraph>=0.4
+langchain-core>=0.3
+langchain-openai>=0.2
+langgraph-checkpoint-postgres>=2.0
+
+# 展示层：一个页面
+fastapi>=0.115
+uvicorn[standard]>=0.30
+streamlit>=1.38
+matplotlib>=3.9
+
+# 通用
+python-dotenv>=1.0
+pydantic>=2.9
+httpx>=0.27
+
+# 测试（方案 B / C 的红线回归测试）
+pytest>=8.0

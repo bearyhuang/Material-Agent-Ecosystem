@@ -1,0 +1,20 @@
+# 进化层：EvoMap Evolver（Node，离线，不连 Hub）
+# 内置 python3 + sklearn：Gene.validation 走 `node run_eval.js --check`，需调用 arena.py 产生真实数值
+FROM node:22-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    GEP_ASSETS_DIR=/workspace/.evolver/gep
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates git python3 python3-pip python3-dev build-essential libpq-dev pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm install -g @evomap/evolver@2.0.38
+
+RUN pip3 install --break-system-packages --no-cache-dir \
+      -i https://pypi.tuna.tsinghua.edu.cn/simple \
+      numpy scikit-learn pandas psycopg[binary]
+
+WORKDIR /workspace
+CMD ["tail", "-f", "/dev/null"]

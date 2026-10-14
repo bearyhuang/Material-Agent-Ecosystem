@@ -1,0 +1,24 @@
+{
+  "name": "material-agent-ecosystem-blockchain",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BOT Chain 677 链上层：Agent 身份注册 / 算法竞马排名 / 预测调用记录",
+  "scripts": {
+    "compile": "node compile.js",
+    "compile:check": "node compile.js --check",
+    "deploy": "node mae.mjs deploy",
+    "deploy:dry": "node mae.mjs deploy --dry-run",
+    "register": "node mae.mjs register",
+    "race": "node mae.mjs race",
+    "rank": "node mae.mjs rank",
+    "predict": "node mae.mjs predict",
+    "status": "node mae.mjs status",
+    "test": "node compile.js --check"
+  },
+  "keywords": ["bot-chain", "677", "material-agent", "ai4s"],
+  "license": "MIT",
+  "dependencies": {
+    "ethers": "^6.17.0",
+    "solc": "^0.8.28"
+  }
+}

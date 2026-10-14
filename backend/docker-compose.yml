@@ -1,0 +1,106 @@
+# FormulaAgents · 方案A（自进化配方算法竞技场）基础环境
+#   db       PostgreSQL 18 + pgvector（事实与实验数据）
+#   arena    Python 工具层 + LangGraph 编排层（内置 Node22，便于 node run_eval.js 包装验证）
+#   evolver  EvoMap Evolver（Node，离线进化层；内置 python3+sklearn 供 validation 命令调用）
+# 用法：docker compose -f backend/docker-compose.yml up -d --build
+name: formulaswarm
+
+services:
+  db:
+    image: pgvector/pgvector:pg18
+    container_name: fs-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      # PG18 镜像 PGDATA=/var/lib/postgresql/18/docker，必须挂载到 /var/lib/postgresql（单挂载点）
+      - fs-db-data:/var/lib/postgresql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./sql/schema_ext.sql:/docker-entrypoint-initdb.d/20-schema-ext.sql:ro
+      - ./sql/schema_level5_6.sql:/docker-entrypoint-initdb.d/25-level56.sql:ro
+      - ./sql/seed_data.sql:/docker-entrypoint-initdb.d/30-seed.sql:ro
+      - ./sql/schema_multisystem.sql:/docker-entrypoint-initdb.d/35-multisystem.sql:ro
+      # Agent 只读账号固化进初始化（重建卷后自动恢复，演示信任边界用）
+      - ./sql/20-agent-ro.sql:/docker-entrypoint-initdb.d/40-agent-ro.sql:ro
+      # 方案 B（虚拟铸造厂）+ 方案 C（跨项目发现）的库表与种子
+      - ./sql/schema_foundry.sql:/docker-entrypoint-initdb.d/50-foundry.sql:ro
+      - ./sql/seed_foundry.sql:/docker-entrypoint-initdb.d/60-seed-foundry.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    command:
+      - postgres
+      - -c
+      - shared_preload_libraries=vector
+      - -c
+      - max_connections=200
+      - -c
+      - work_mem=32MB
+
+  arena:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.arena
+      args:
+        INSTALL_BO: ${INSTALL_BO:-0}
+    container_name: fs-arena
+    restart: unless-stopped
+    working_dir: /workspace/backend
+    environment:
+      PYTHONPATH: /workspace/backend
+      GEP_ASSETS_DIR: /workspace/.evolver/gep
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      PIP_INDEX_URL: https://pypi.tuna.tsinghua.edu.cn/simple
+    volumes:
+      - ..:/workspace
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${API_PORT}:8000"
+      - "${UI_PORT}:8501"
+      # 备用端口：部分办公网只放行 80/8080，8501 被拦截时改用 8080 访问同一页面
+      - "${UI_PORT_ALT:-8080}:8501"
+    # 展示层：同一容器内起 API(8000) + Streamlit(8501)，保底录屏就录这个页面
+    command:
+      - bash
+      - -c
+      - "uvicorn app.api:app --host 0.0.0.0 --port 8000 & \
+         streamlit run app/ui.py --server.port 8501 --server.address 0.0.0.0 \
+           --server.headless true --server.fileWatcherType none \
+           --server.enableCORS false --server.enableXsrfProtection false \
+           --server.enableWebsocketCompression false --browser.gatherUsageStats false & \
+         tail -f /dev/null"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u;u.urlopen('http://localhost:8000/api/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  evolver:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.evolver
+    container_name: fs-evolver
+    restart: unless-stopped
+    working_dir: /workspace
+    environment:
+      GEP_ASSETS_DIR: /workspace/.evolver/gep
+      EVOLVER_HOME: /workspace/.evolver
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    volumes:
+      - ..:/workspace
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["tail", "-f", "/dev/null"]
+
+volumes:
+  fs-db-data:

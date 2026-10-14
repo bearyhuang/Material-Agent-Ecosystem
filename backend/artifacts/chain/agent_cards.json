@@ -1,0 +1,126 @@
+{
+  "protocol": "formulaswarm/1.0",
+  "erc8004": true,
+  "chain_id": 677,
+  "wallet_address": "0x4Bd9a6ab15329F592f885f7d3891406178c4070f",
+  "generated_at": "2026-10-07T22:15:08Z",
+  "agents": [
+    {
+      "id": "supervisor",
+      "role": "supervisor",
+      "level": "L1",
+      "family": null,
+      "capabilities": [
+        "parse_task",
+        "match_signals",
+        "register_run"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "champion_ridge",
+      "role": "champion",
+      "level": "L2",
+      "family": "ridge",
+      "capabilities": [
+        "build_model",
+        "fit",
+        "predict"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "champion_pls",
+      "role": "champion",
+      "level": "L2",
+      "family": "pls",
+      "capabilities": [
+        "build_model",
+        "fit",
+        "predict"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "champion_rf",
+      "role": "champion",
+      "level": "L2",
+      "family": "rf",
+      "capabilities": [
+        "build_model",
+        "fit",
+        "predict"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "champion_gbr",
+      "role": "champion",
+      "level": "L2",
+      "family": "gbr",
+      "capabilities": [
+        "build_model",
+        "fit",
+        "predict"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "champion_gp",
+      "role": "champion",
+      "level": "L2",
+      "family": "gp",
+      "capabilities": [
+        "build_model",
+        "fit",
+        "predict",
+        "uq"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "arbiter",
+      "role": "arbiter",
+      "level": "L1",
+      "family": null,
+      "capabilities": [
+        "pugh_matrix",
+        "verdict"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "red_team",
+      "role": "red_team",
+      "level": "L2",
+      "family": null,
+      "capabilities": [
+        "leak_check",
+        "ood_check",
+        "family_audit"
+      ],
+      "trust_scope": "db:read_only"
+    },
+    {
+      "id": "integrator",
+      "role": "integrator",
+      "level": "L1",
+      "family": null,
+      "capabilities": [
+        "freeze_golden",
+        "gate_evaluate"
+      ],
+      "trust_scope": "evo.capsule:write"
+    },
+    {
+      "id": "scribe",
+      "role": "scribe",
+      "level": "L0",
+      "family": null,
+      "capabilities": [
+        "append_event"
+      ],
+      "trust_scope": "evo.evolution_event:append_only"
+    }
+  ]
+}

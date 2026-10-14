@@ -1,0 +1,44 @@
+# ===== 机密：链端私钥与令牌，绝不入库 =====
+blockchain/.env
+**/.env
+!.env.example
+!blockchain/.env.example
+*.pem
+*.key
+
+# ===== 敏感数据：默认不进公开仓库 =====
+# 实验室原始采集物（未脱敏）
+data_raw/
+# 研究产物：含甲方名称（宁德时代/比亚迪/万华/国轩/中创新航）、授权清单、白名单、
+# 客户应用与项目信息 —— 公开前必须脱敏。
+# 若仓库为"私有 + 审核员授权访问"，可删除下面这行后提交。
+research/
+# 数据库 schema 与种子（含合成/真实数据结构，公开评审前不暴露）
+backend/sql/
+# 设计文档（含甲方需求与评审细节，公开版另写脱敏文档）
+docs/
+# 链上部署记录（含部署账户地址与交易哈希，按团队要求不公开）
+blockchain/deployments.json
+
+# ===== 依赖与构建产物 =====
+node_modules/
+blockchain/node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ===== 测试/工具产物 =====
+.playwright-cli/
+chain.yaml
+chain2.yaml
+
+# ===== 运行时产物 =====
+*.log
+.DS_Store
+.venv/
+venv/
+dist/
+build/
